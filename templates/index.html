@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>訂餐系統</title>
+</head>
+<body>
+    <h1>訂餐系統</h1>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('read_bp.view_menu') }}">查看餐點</a></li>
+            <li><a href="{{ url_for('read_bp.view_orders') }}">查看訂單</a></li>
+            <li><a href="{{ url_for('create_bp.add_menu_item') }}">添加新餐點</a></li>
+            <li><a href="{{ url_for('create_bp.add_order') }}">添加新訂單</a></li>
+        </ul>
+    </nav>
+</body>
+</html>

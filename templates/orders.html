@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>訂單管理</title>
+</head>
+<body>
+    <h1>訂單管理</h1>
+
+    <!-- 搜索表單 -->
+    <form action="{{ url_for('search_bp.search_order') }}" method="POST">
+        <label for="query">搜索顧客名稱：</label>
+        <input type="text" id="query" name="query" value="{{ query }}" placeholder="輸入顧客名稱">
+        <button type="submit">搜索</button>
+    </form>
+
+    <!-- 搜索結果 -->
+    {% if query and results %}
+        <h2>搜索結果</h2>
+        <ul>
+            {% for order in results %}
+                <li>訂單ID: {{ order['_id'] }}, 顧客: {{ order['customer_name'] }}, 狀態: {{ order['order_status'] }}</li>
+            {% endfor %}
+        </ul>
+    {% elif query %}
+        <p>未找到匹配的訂單。</p>
+    {% endif %}
+
+    <!-- 顯示訂單列表 -->
+    <h2>訂單列表</h2>
+    <table border="1">
+        <tr>
+            <th>訂單編號</th>
+            <th>顧客名稱</th>
+            <th>餐點ID</th>
+            <th>價格</th>  <!-- 顯示價格 -->
+            <th>狀態</th>
+            <th>創建時間</th>
+            <th>操作</th>  <!-- 新增操作列 -->
+        </tr>
+        {% for order in orders %}
+        <tr>
+            <td>{{ order['_id'] }}</td>
+            <td>{{ order['customer_name'] }}</td>
+            <td>{{ order['item_id'] }}</td>
+            <td>{{ order['price'] }} 元</td>  <!-- 顯示價格 -->
+            <td>{{ order['order_status'] }}</td>
+            <td>{{ order['created_at'] }}</td>
+            <td>
+                <a href="{{ url_for('update_bp.update_order', order_id=order['_id']) }}">編輯</a>  <!-- 編輯連結 -->
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <a href="{{ url_for('home') }}">回到主頁</a>
+</body>
+</html>

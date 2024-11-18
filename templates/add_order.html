@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>添加新訂單</title>
+    <script>
+        function updateTotal() {
+            let total = 0;
+
+            // 遍歷所有選中的餐點，計算總價
+            document.querySelectorAll('.menu-item').forEach(item => {
+                const checkbox = item.querySelector('.item-checkbox');
+                const quantityInput = item.querySelector('.item-quantity');
+                const price = parseFloat(item.getAttribute('data-price'));
+
+                if (checkbox.checked) {
+                    const quantity = parseInt(quantityInput.value) || 0;
+                    total += price * quantity;
+                }
+            });
+
+            document.getElementById('total_price').textContent = `總價: $${total.toFixed(2)}`;
+        }
+    </script>
+</head>
+<body>
+    <h1>添加新訂單</h1>
+    <form action="{{ url_for('create_bp.add_order') }}" method="POST">
+        <label for="customer_name">顧客名稱：</label>
+        <input type="text" id="customer_name" name="customer_name" required>
+        <br><br>
+
+        <h2>選擇餐點</h2>
+        <div>
+            {% for item in menu_items %}
+            <div class="menu-item" data-price="{{ item.price }}">
+                <input type="checkbox" class="item-checkbox" name="item_ids" value="{{ item._id }}" onchange="updateTotal()">
+                <label>{{ item.name }} - ${{ item.price }}</label>
+                <input type="number" class="item-quantity" name="quantities" min="1" value="1" onchange="updateTotal()" disabled>
+            </div>
+            {% endfor %}
+        </div>
+
+        <h3 id="total_price">總價: $0.00</h3>
+
+        <button type="submit">下單</button>
+    </form>
+    <a href="{{ url_for('home') }}">回到主頁</a>
+
+    <script>
+        // 啟用或禁用數量輸入框
+        document.querySelectorAll('.item-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                const quantityInput = this.parentElement.querySelector('.item-quantity');
+                quantityInput.disabled = !this.checked;
+                if (!this.checked) {
+                    quantityInput.value = 1; // 重設數量為 1
+                }
+                updateTotal();
+            });
+        });
+    </script>
+</body>
+</html>
