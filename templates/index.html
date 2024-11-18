@@ -1,18 +1,78 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>訂餐系統</title>
+    <!-- 引入 Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .navbar {
+            background-color: #343a40;
+        }
+
+        .navbar-brand,
+        .nav-link {
+            color: #ffffff !important;
+        }
+
+        .nav-link:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            margin: 20px 0;
+            color: #343a40;
+            text-align: center;
+        }
+
+        .container {
+            margin-top: 30px;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>訂餐系統</h1>
-    <nav>
-        <ul>
-            <li><a href="{{ url_for('read_bp.view_menu') }}">查看餐點</a></li>
-            <li><a href="{{ url_for('read_bp.view_orders') }}">查看訂單</a></li>
-            <li><a href="{{ url_for('create_bp.add_menu_item') }}">添加新餐點</a></li>
-            <li><a href="{{ url_for('create_bp.add_order') }}">添加新訂單</a></li>
-        </ul>
+    <!-- 導覽列 -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">訂餐系統</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="切換導航">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('read_bp.view_menu') }}">查看餐點</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('read_bp.view_orders') }}">查看訂單</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('create_bp.add_menu_item') }}">添加新餐點</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('create_bp.add_order') }}">添加新訂單</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </nav>
+
+    <!-- 主標題 -->
+    <div class="container">
+        <h1>歡迎來到訂餐系統</h1>
+        <p class="text-center text-muted">方便管理您的餐點與訂單，快速查看與更新資料。</p>
+    </div>
+
+    <!-- 引入 Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

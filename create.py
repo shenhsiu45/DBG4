@@ -29,8 +29,9 @@ def add_menu_item():
 def add_order():
     if request.method == 'POST':
         customer_name = request.form.get('customer_name')
-        item_ids = request.form.getlist('item_ids')  # 獲取選中的餐點 ID
-        quantities = request.form.getlist('quantities')  # 獲取對應的數量
+        item_ids = request.form.getlist('item_id')  # 多选支持
+        quantities = request.form.getlist('quantity')  # 每项的数量
+        orders_collection = current_app.config['restaurant']['orders']
 
         # 檢查是否有選擇餐點
         if not item_ids:
@@ -54,13 +55,14 @@ def add_order():
                 })
 
         # 保存訂單到資料庫
-        current_app.config['restaurant']['orders'].insert_one({
-            'customer_name': customer_name,
-            'items': order_items,
-            'total_price': total_price,
-            'created_at': datetime.now()
-        })
-
+        new_order = {
+        'customer_name': customer_name,
+        'items': order_items,
+        'total_price': total_price,
+        'order_status': 'Pending',
+        'created_at': datetime.utcnow()
+        }
+        orders_collection.insert_one(new_order)
         flash('訂單已成功添加')
         return redirect(url_for('read_bp.view_orders'))
 

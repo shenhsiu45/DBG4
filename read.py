@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template,current_app
 from pymongo import MongoClient
 
 # 定义 Blueprint
@@ -21,10 +21,10 @@ def view_menu():
 # 查看所有訂單
 @read_bp.route('/orders')
 def view_orders():
-    orders = list(orders_collection.find())
-    for order in orders:
-        order['_id'] = str(order['_id'])  # 转换 _id 为字符串便于显示
+    orders = current_app.config['restaurant']['orders'].find()
+    orders = [{'_id': str(order['_id']), **order} for order in orders]  # 将 `_id` 转换为字符串
     return render_template('orders.html', orders=orders)
+
 
 
 
