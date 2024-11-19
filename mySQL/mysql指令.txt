@@ -1,0 +1,31 @@
+資料庫結構
+在 MySQL 中，需建立以下表：
+
+餐點表 (menu)、訂單表 (orders)、訂單明細表 (order_items)
+CREATE TABLE menu (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    created_at DATETIME NOT NULL
+);
+
+CREATE TABLE orders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_name VARCHAR(255) NOT NULL,
+    total_price DECIMAL(10, 2) NOT NULL,
+    order_status VARCHAR(50) DEFAULT 'Pending',
+    created_at DATETIME NOT NULL
+);
+
+CREATE TABLE order_items (
+    id INT AUTO_INCREMENT PRIMARY KEY,  -- 唯一的項目 ID
+    order_id INT NOT NULL,              -- 關聯到訂單的 ID
+    menu_id INT NOT NULL,               -- 關聯到菜單的 ID
+    item_name VARCHAR(255) NOT NULL,    -- 餐點名稱
+    quantity INT NOT NULL,              -- 訂購的數量
+    price DECIMAL(10, 2) NOT NULL,      -- 單個餐點的價格
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  -- 訂單項目的創建時間
+    FOREIGN KEY (order_id) REFERENCES orders(id),  -- 關聯到訂單表格
+    FOREIGN KEY (menu_id) REFERENCES menu(id)       -- 關聯到菜單表格
+);
+

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>搜索結果 - {{ search_type }}</title>
+</head>
+<body>
+    <h1>搜索結果 - {{ search_type }}</h1>
+    <form method="POST">
+        <input type="text" name="query" placeholder="輸入關鍵字" value="{{ query }}">
+        <button type="submit">搜索</button>
+    </form>
+    {% if results %}
+        {% if search_type == "Menu" %}
+            <h2>餐點</h2>
+            <table border="1">
+                <tr>
+                    <th>餐點名稱</th>
+                    <th>價格</th>
+                </tr>
+                {% for item in results %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.price }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% elif search_type == "Order" %}
+            <h2>訂單</h2>
+            <table border="1">
+                <tr>
+                    <th>顧客名稱</th>
+                    <th>餐點名稱</th>
+                    <th>訂單狀態</th>
+                </tr>
+                {% for order in results %}
+                <tr>
+                    <td>{{ order.customer_name }}</td>
+                    <td>{{ order.item_id }}</td>
+                    <td>{{ order.order_status }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+    {% else %}
+        <p>沒有找到相關結果。</p>
+    {% endif %}
+    <a href="{{ url_for('home') }}">回到主頁</a>
+</body>
+</html>

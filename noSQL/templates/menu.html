@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>餐點列表</title>
+</head>
+<body>
+    <h1>餐點列表</h1>
+
+    <!-- 搜索表單 -->
+    <form action="{{ url_for('search_bp.search_menu') }}" method="POST">
+        <label for="query">搜尋餐點名稱：</label>
+        <input type="text" id="query" name="query" value="{{ query }}" placeholder="輸入餐點名稱">
+        <button type="submit">搜尋</button>
+    </form>
+
+    <!-- 搜尋結果 -->
+    {% if query and results %}
+        <h2>搜尋結果</h2>
+        <table border="1">
+            <tr>
+                <th>餐點名稱</th>
+                <th>價格</th>
+            </tr>
+            {% for item in results %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>{{ item.price }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% elif query %}
+        <p>未找到符合的餐點。</p>
+    {% endif %}
+
+    <!-- 所有餐點 -->
+    <h2>所有餐點</h2>
+    <table border="1">
+        <tr>
+            <th>餐點名稱</th>
+            <th>價格</th>
+        </tr>
+        {% for item in menu_items %}
+        <tr>
+            <td>{{ item.name }}</td>
+            <td>{{ item.price }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <a href="{{ url_for('home') }}">回到主頁</a>
+</body>
+</html>

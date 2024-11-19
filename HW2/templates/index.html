@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order and User List</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        h1 {
+            font-size: 2rem;
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 10px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            font-size: 1rem;
+            margin-bottom: 8px;
+            color: #555;
+        }
+        input[type="text"], input[type="search"] {
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 1rem;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        table {
+            width: 100%;
+            margin-top: 10px;
+            border-collapse: collapse;
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        /* 搜索表单居右对齐 */
+        .search-bar {
+            position: absolute; /* 使用绝对定位 */
+            top: 20px; /* 距离上边20像素 */
+            right: 20px; /* 距离右边20像素 */
+        }
+        /* 搜索表单居右对齐 */
+        .search-bar2 {
+            position: absolute; /* 使用绝对定位 */
+            top: 20px; /* 距离上边20像素 */
+            right: 300px; /* 距离右边20像素 */
+        }
+        /* 隐藏多余的产品行 */
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Customer & Order Center </h1>
+    
+    <div class="search-bar">
+        <!-- 搜索表单 -->
+        <form method="GET" action="{{ url_for('search_bp.search_user') }}">
+            <input type="search" name="query" placeholder="Search user">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+    <div class="search-bar2">
+        <!-- 搜索表单 -->
+        <form method="GET" action="{{ url_for('search_bp.search_product') }}">
+            <input type="search" name="query" placeholder="Search product">
+            <button type="submit">Search Product</button>
+        </form>
+    </div>
+    <!-- 返回首頁按鈕 -->
+<a href="{{ url_for('read_bp.index') }}">
+    <button style="padding: 10px 15px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; transition: background-color 0.3s ease;">
+        Back to Home
+    </button>
+</a>
+    <!-- 按鈕連結到 /join 路由 -->
+    <a href="/join">
+        <button>Order list 訂單查詢</button>
+    </a>
+    <!-- 按鈕連結到 /product 路由 -->
+    <a href="/product">
+        <button>product list商品清單</button>
+    </a>
+
+    <!-- Display All Orders -->
+{% if order %}
+<h2>Order List</h2>
+<form method="POST" action="/join"> <!-- 使用POST方法提交数据 -->
+    <table>
+        <tr>
+            <th>Order ID</th>
+            <th>User Name</th>
+            <th>Product Name</th>
+            <th>Quantity</th>
+            <th>Total Price</th>
+            <th>Update</th> <!-- 更新按钮 -->
+        </tr>
+        {% for order in orders %}
+        <tr>
+            <td>{{ order.order_id }}</td>
+            <td>{{ order.user_name }}</td>
+            <td>{{ order.product_name }}</td>
+            <td>
+                <!-- 可编辑的数量 -->
+                <input type="number" name="quantity" value="{{ order.Quantity }}" required>
+            </td>
+            <td>
+                <!-- 可编辑的总价 -->
+                <input type="text" name="total_price" value="{{ order.Total_price }}" required>
+            </td>
+            <td>
+                <!-- 隐藏的订单 ID，用于识别订单 -->
+                <input type="hidden" name="order_id" value="{{ order.order_id }}">
+                <button type="submit" class="btn btn-success">Update</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</form>
+{% endif %}
+
+    {% if products %}
+        <h2>Product List</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Price</th>
+            </tr>
+            {% for product in products %}
+            <tr class="product-row {% if loop.index > 3 %}hidden{% endif %}">
+                <td>{{ product.id }}</td>
+                <td>{{ product.name }}</td>
+                <td>{{ product.description }}</td>
+                <td>{{ product.price }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <button id="loadMore" style="margin-top: 10px;">Continue</button>
+    {% endif %}
+
+    <script>
+        // JavaScript to handle loading more products
+        let currentVisible = 3; // 当前显示的产品数量
+        const productRows = document.querySelectorAll('.product-row');
+        const loadMoreButton = document.getElementById('loadMore');
+
+        loadMoreButton.addEventListener('click', () => {
+            // 显示下一个产品行
+            for (let i = currentVisible; i < currentVisible + 3 && i < productRows.length; i++) {
+                productRows[i].classList.remove('hidden');
+            }
+            currentVisible += 3; // 更新当前显示数量
+
+            // 如果没有更多行可显示，则隐藏按钮
+            if (currentVisible >= productRows.length) {
+                loadMoreButton.style.display = 'none';
+            }
+        });
+    </script>
+    
+    <!-- User Input Form -->
+    <h2>User List</h2>
+    <form method="POST" action="/add">
+        <label for="name">Enter Your Name:</label>
+        <input type="text" id="name" name="name" required>
+        <button type="submit">Add User</button>
+    </form>
+
+    <!-- Display All Users with Delete and Update Option -->
+<h2>All Users</h2>
+<form method="POST" action="/delete">
+    <table>
+        <tr>
+            <th>Select</th>  <!-- 勾选框的标题 -->
+            <th>ID</th>
+            <th>Name</th>
+            <th>Created At</th>
+            <th>Update</th> <!-- 更新功能的标题 -->
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td><input type="checkbox" name="user_ids" value="{{ user['id'] }}"></td> <!-- 勾选框 -->
+            <td>{{ user['id'] }}</td>
+            <td>
+                <!-- 这里放入可编辑的用户名字段，添加唯一的 name -->
+                <input type="text" name="name-{{ user['id'] }}" value="{{ user['name'] }}">
+            </td>
+            <td>{{ user['created_at'] }}</td>
+            <td>
+                <!-- Update按钮，使用formaction动态生成URL -->
+                <button type="submit" formaction="{{ url_for('update_bp.update_user', user_id=user['id']) }}" class="btn btn-success">Update</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <button type="submit" style="background-color: red;">Delete Selected Users</button> <!-- 删除按钮 -->
+</form>
+
+
+    
+</body>
+</html>
