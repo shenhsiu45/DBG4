@@ -32,5 +32,24 @@ app.register_blueprint(search_bp, url_prefix='/search')
 def home():
     return render_template('index.html')
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+@app.route('/feature')
+def feature():
+    return render_template('feature.html')
+
+@app.route('/contact')
+def contact():
+    return render_template('index.html')
+
+@app.route('/menu')
+def menu():
+    return render_template('menu.html')
+
+@app.route('/booking')
+def booking():
+    return render_template('add_order.html')
 if __name__ == '__main__':
     app.run(debug=True)

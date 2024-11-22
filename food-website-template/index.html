@@ -37,11 +37,13 @@
                 <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                     <div class="navbar-nav ml-auto">
                         <a href="index.html" class="nav-item nav-link active">Home</a>
+                        <a href="{{ url_for('create_bp.add_order') }}" class="nav-item nav-link">Booking</a>
                         <a href="about.html" class="nav-item nav-link">About</a>
                         <a href="feature.html" class="nav-item nav-link">Feature</a>
-                        <a href="menu.html" class="nav-item nav-link">Menu</a>
-                        <a href="booking.html" class="nav-item nav-link">Booking</a>
+                        <a href="{{ url_for('read_bp.view_menu') }}" class="nav-item nav-link">Menu</a>
+                        <a href="{{ url_for('read_bp.view_orders') }}" class="nav-item nav-link">Your Order</a>
                         <a href="contact.html" class="nav-item nav-link">Contact</a>
+                        <a href="{{ url_for('create_bp.add_menu_item') }}" class="nav-item nav-link">後台</a>
                     </div>
                 </div>
             </div>

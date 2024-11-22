@@ -1,53 +1,148 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-    <meta charset="UTF-8">
-    <title>餐點列表</title>
-</head>
-<body>
-    <h1>餐點列表</h1>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Burger King - Food Website Template</title>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="Free Website Template" name="keywords">
+        <meta content="Free Website Template" name="description">
 
-    <!-- 搜索表單 -->
-    <form action="{{ url_for('search_bp.search_menu') }}" method="POST">
-        <label for="query">搜尋餐點名稱：</label>
-        <input type="text" id="query" name="query" value="{{ query }}" placeholder="輸入餐點名稱">
-        <button type="submit">搜尋</button>
-    </form>
+        <!-- Favicon -->
+        <link href="{{ url_for('static', filename='img/favicon.ico') }}" rel="icon">
 
-    <!-- 搜尋結果 -->
-    {% if query and results %}
-        <h2>搜尋結果</h2>
-        <table border="1">
-            <tr>
-                <th>餐點名稱</th>
-                <th>價格</th>
-            </tr>
-            {% for item in results %}
-            <tr>
-                <td>{{ item.name }}</td>
-                <td>{{ item.price }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-    {% elif query %}
-        <p>未找到符合的餐點。</p>
-    {% endif %}
+        <!-- Google Font -->
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400|Nunito:600,700" rel="stylesheet"> 
+        
+        <!-- CSS Libraries -->
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+        <link href="{{ url_for('static', filename='lib/animate/animate.min.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='lib/flaticon/font/flaticon.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css') }}" rel="stylesheet" />
 
-    <!-- 所有餐點 -->
-    <h2>所有餐點</h2>
-    <table border="1">
-        <tr>
-            <th>餐點名稱</th>
-            <th>價格</th>
-        </tr>
-        {% for item in menu_items %}
-        <tr>
-            <td>{{ item.name }}</td>
-            <td>{{ item.price }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+        <!-- Template Stylesheet -->
+        <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
 
-    <a href="{{ url_for('home') }}">回到主頁</a>
-</body>
+    </head>
+
+    <body>
+        <!-- Nav Bar Start -->
+        <div class="navbar navbar-expand-lg bg-light navbar-light">
+            <div class="container-fluid">
+                <a href="{{ url_for('home') }}" class="navbar-brand">Burger <span>King</span></a>
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+                    <div class="navbar-nav ml-auto">
+                        <a href="{{ url_for('home') }}" class="nav-item nav-link active">Home</a>
+                        <a href="{{ url_for('create_bp.add_order') }}" class="nav-item nav-link">Booking</a>
+                        <a href="{{ url_for('about') }}" class="nav-item nav-link">About</a>
+                        <a href="{{ url_for('feature') }}" class="nav-item nav-link">Feature</a>
+                        <a href="{{ url_for('read_bp.view_menu') }}" class="nav-item nav-link">Menu</a>
+                        <a href="{{ url_for('read_bp.view_orders') }}" class="nav-item nav-link">Your Order</a>
+                        <a href="{{ url_for('contact') }}" class="nav-item nav-link">Contact</a>
+                        <a href="{{ url_for('create_bp.add_menu_item') }}" class="nav-item nav-link">後台</a>
+                    </div>                    
+                </div>
+            </div>
+        </div>
+        <!-- Nav Bar End -->
+        
+        <!-- Page Header Start -->
+        <div class="page-header mb-0">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <h2>Food Menu</h2>
+                    </div>
+                    <div class="col-12">
+                        <a href="{{ url_for('home') }}">Home</a>
+                        <a href="{{ url_for('about') }}">About Us</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Page Header End -->
+
+        <!-- Menu Content Start -->
+        <div class="container mt-4">
+            <h1 class="text-center">餐點列表</h1>
+
+            <!-- 搜索表單 -->
+            <form class="my-4" action="{{ url_for('search_bp.search_menu') }}" method="POST">
+                <div class="form-group">
+                    <label for="query">搜尋餐點名稱：</label>
+                    <div class="input-group">
+                        <input type="text" id="query" name="query" value="{{ query }}" placeholder="輸入餐點名稱" class="form-control">
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-primary">搜尋</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <!-- 搜尋結果 -->
+            {% if query and results %}
+                <h2>搜尋結果</h2>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>餐點名稱</th>
+                            <th>價格</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in results %}
+                        <tr>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.price }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% elif query %}
+                <p class="text-danger">未找到符合的餐點。</p>
+            {% endif %}
+
+            <!-- 所有餐點 -->
+            <h2>所有餐點</h2>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>餐點名稱</th>
+                        <th>價格</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in menu_items %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.price }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <a href="{{ url_for('home') }}" class="btn btn-link">回到主頁</a>
+        </div>
+        <!-- Menu Content End -->
+
+        <!-- Back to Top -->
+        <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
+
+        <!-- JavaScript Libraries -->
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+        <script src="{{ url_for('static', filename='lib/easing/easing.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='lib/owlcarousel/owl.carousel.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='lib/tempusdominus/js/moment.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='lib/tempusdominus/js/moment-timezone.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js') }}"></script>
+
+        <!-- Template Javascript -->
+        <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    </body>
 </html>
