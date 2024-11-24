@@ -5,25 +5,49 @@ from datetime import datetime
 
 create_bp = Blueprint('create_bp', __name__)
 
-# 新增餐點的路由
 @create_bp.route('/add_menu', methods=['GET', 'POST'])
 def add_menu_item():
+    item_id = request.args.get('item_id')  # 如果是更新操作，獲取 item_id
+    if item_id:
+        # 如果有 item_id，則表示是更新操作
+        try:
+            object_id = ObjectId(item_id)
+        except Exception:
+            return "Invalid ID format", 400
+        
+        menu_item = current_app.config['restaurant']['menu'].find_one({"_id": object_id})
+        if not menu_item:
+            return "Item not found", 404
+    else:
+        menu_item = None  # 如果是新增操作，則 menu_item 為 None
+
     if request.method == 'POST':
-        # 從表單獲取餐點名稱和價格
-        item_name = request.form.get('item_name')
+        item_name = request.form.get('name')
         price = request.form.get('price')
 
-        # 檢查餐點名稱和價格是否提供
-        if item_name and price:
-            # 插入到 MongoDB 餐點集合
+        if item_id:
+            # 更新操作
+            current_app.config['restaurant']['menu'].update_one(
+                {"_id": ObjectId(item_id)},
+                {"$set": {"name": item_name, "price": float(price)}}
+            )
+        else:
+            # 新增操作
             current_app.config['restaurant']['menu'].insert_one({
                 'name': item_name,
                 'price': float(price),
                 'created_at': datetime.now()
             })
+        
+        return redirect(url_for('create_bp.add_menu_item'))  # 返回到菜單編輯頁面
 
-            return redirect(url_for('read_bp.view_menu'))
-    return render_template('add_menu.html')
+    # 獲取所有菜單項目
+    menu_items = list(current_app.config['restaurant']['menu'].find())
+    for item in menu_items:
+        item['_id'] = str(item['_id'])  # 將 _id 轉換為字符串，方便顯示
+    
+    return render_template('add_menu.html', item=menu_item, results=menu_items)  # 傳遞菜單項目列表
+
 
 @create_bp.route('/add_order', methods=['GET', 'POST'])
 def add_order():

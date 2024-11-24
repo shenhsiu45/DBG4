@@ -1,8 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <title>添加新訂單</title>
+    <title>訂單管理 - Burger King</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Free Website Template" name="keywords">
+    <meta content="Free Website Template" name="description">
+
+    <!-- Favicon -->
+    <link href="{{ url_for('static', filename='img/favicon.ico') }}" rel="icon">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400|Nunito:600,700" rel="stylesheet"> 
+    
+    <!-- CSS Libraries -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='lib/animate/animate.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='lib/flaticon/font/flaticon.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css') }}" rel="stylesheet" />
+
+    <!-- Template Stylesheet -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
     <script>
         function updateTotal() {
             let total = 0;
@@ -24,41 +44,88 @@
     </script>
 </head>
 <body>
-    <h1>添加新訂單</h1>
-    <form action="{{ url_for('create_bp.add_order') }}" method="POST">
-        <label for="customer_name">顧客名稱：</label>
-        <input type="text" id="customer_name" name="customer_name" required>
-        <br><br>
-
-        <h2>選擇餐點</h2>
-        <div>
-            {% for item in menu_items %}
-            <div class="menu-item" data-price="{{ item.price }}">
-                <input type="checkbox" class="item-checkbox" name="item_ids" value="{{ item._id }}" onchange="updateTotal()">
-                <label>{{ item.name }} - ${{ item.price }}</label>
-                <input type="number" class="item-quantity" name="quantities" min="1" value="1" onchange="updateTotal()" disabled>
+    <!-- Nav Bar Start -->
+    <div class="navbar navbar-expand-lg bg-light navbar-light">
+        <div class="container-fluid">
+            <a href="{{ url_for('home') }}" class="navbar-brand">Burger <span>King</span></a>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+                <div class="navbar-nav ml-auto">
+                    <a href="{{ url_for('home') }}" class="nav-item nav-link active">Home</a>
+                    <a href="{{ url_for('create_bp.add_order') }}" class="nav-item nav-link">Booking</a>
+                    <a href="{{ url_for('about') }}" class="nav-item nav-link">About</a>
+                    <a href="{{ url_for('feature') }}" class="nav-item nav-link">Feature</a>
+                    <a href="{{ url_for('read_bp.view_menu') }}" class="nav-item nav-link">Menu</a>
+                    <a href="{{ url_for('read_bp.view_orders') }}" class="nav-item nav-link">Your Order</a>
+                    <a href="{{ url_for('contact') }}" class="nav-item nav-link">Contact</a>
+                    <a href="{{ url_for('create_bp.add_menu_item') }}" class="nav-item nav-link">後台</a>
+                </div>
             </div>
-            {% endfor %}
         </div>
+    </div>
+    <!-- Nav Bar End -->
 
-        <h3 id="total_price">總價: $0.00</h3>
+    <!-- Page Header Start -->
+    <div class="page-header mb-0">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h2>訂單管理</h2>
+                </div>
+                <div class="col-12">
+                    <a href="{{ url_for('home') }}">Home</a>
+                    <a href="{{ url_for('about') }}">About Us</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Page Header End -->
 
-        <button type="submit">下單</button>
-    </form>
-    <a href="{{ url_for('home') }}">回到主頁</a>
+    <!-- Main Content Start -->
+    <div class="container mt-5">
+        <h1 class="mt-3">添加新訂單</h1>
 
+        <form action="{{ url_for('create_bp.add_order') }}" method="POST">
+            <label for="customer_name">顧客名稱：</label>
+            <input type="text" id="customer_name" name="customer_name" class="form-control mb-3" required>
+
+            <h2>選擇餐點</h2>
+            <div>
+                {% for item in menu_items %}
+                <div class="menu-item mb-3" data-price="{{ item.price }}">
+                    <div class="form-inline">
+                        <input type="checkbox" class="item-checkbox mr-2" name="item_ids" value="{{ item._id }}" onchange="updateTotal()">
+                        <label class="mr-2">{{ item.name }} - ${{ item.price }}</label>
+                        <input type="number" class="item-quantity form-control ml-auto" name="quantities" min="1" value="1" onchange="updateTotal()" disabled>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <h3 id="total_price">總價: $0.00</h3>
+            <button type="submit" class="btn btn-primary mt-3">下單</button>
+        </form>
+
+        <a href="{{ url_for('home') }}" class="btn btn-link mt-3">回到主頁</a>
+    </div>
+    <!-- Main Content End -->
+
+    <!-- JavaScript -->
     <script>
-        // 啟用或禁用數量輸入框
         document.querySelectorAll('.item-checkbox').forEach(checkbox => {
             checkbox.addEventListener('change', function () {
                 const quantityInput = this.parentElement.querySelector('.item-quantity');
                 quantityInput.disabled = !this.checked;
                 if (!this.checked) {
-                    quantityInput.value = 1; // 重設數量為 1
+                    quantityInput.value = 1;
                 }
                 updateTotal();
             });
         });
     </script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

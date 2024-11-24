@@ -13,10 +13,15 @@ orders_collection = db['orders']
 # 查看所有餐點
 @read_bp.route('/menu')
 def view_menu():
-    menu_items = list(menu_collection.find())
+    # 確保從正確的 MongoDB 集合中獲取菜單項目
+    menu_items = list(current_app.config['restaurant']['menu'].find())
+    
+    # 將每個菜單項目的 _id 轉換為字符串
     for item in menu_items:
-        item['_id'] = str(item['_id'])  # 转换 _id 为字符串便于显示
+        item['_id'] = str(item['_id'])
+
     return render_template('menu.html', menu_items=menu_items)
+
 
 # 查看所有訂單
 @read_bp.route('/orders')

@@ -14,3 +14,16 @@ def delete_order(order_id):
         return "Order not found", 404
 
     return redirect(url_for('read_bp.view_orders'))
+
+@delete_bp.route('/delete/<item_id>', methods=['POST'])
+def delete_menu_item(item_id):
+    try:
+        object_id = ObjectId(item_id)
+    except Exception:
+        return "Invalid ID format", 400
+
+    result = current_app.config['restaurant']['menu'].delete_one({"_id": object_id})
+    if result.deleted_count == 0:
+        return "Item not found", 404
+
+    return redirect(url_for('read_bp.view_menu'))
