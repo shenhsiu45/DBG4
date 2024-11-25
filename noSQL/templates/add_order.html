@@ -23,25 +23,6 @@
 
     <!-- Template Stylesheet -->
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
-    <script>
-        function updateTotal() {
-            let total = 0;
-
-            // 遍歷所有選中的餐點，計算總價
-            document.querySelectorAll('.menu-item').forEach(item => {
-                const checkbox = item.querySelector('.item-checkbox');
-                const quantityInput = item.querySelector('.item-quantity');
-                const price = parseFloat(item.getAttribute('data-price'));
-
-                if (checkbox.checked) {
-                    const quantity = parseInt(quantityInput.value) || 0;
-                    total += price * quantity;
-                }
-            });
-
-            document.getElementById('total_price').textContent = `總價: $${total.toFixed(2)}`;
-        }
-    </script>
 </head>
 <body>
     <!-- Nav Bar Start -->
@@ -90,23 +71,24 @@
         <form action="{{ url_for('create_bp.add_order') }}" method="POST">
             <label for="customer_name">顧客名稱：</label>
             <input type="text" id="customer_name" name="customer_name" class="form-control mb-3" required>
-
+        
             <h2>選擇餐點</h2>
             <div>
                 {% for item in menu_items %}
                 <div class="menu-item mb-3" data-price="{{ item.price }}">
                     <div class="form-inline">
-                        <input type="checkbox" class="item-checkbox mr-2" name="item_ids" value="{{ item._id }}" onchange="updateTotal()">
+                        <input type="checkbox" class="item-checkbox mr-2" name="item_id" value="{{ item._id }}" onchange="updateTotal()">
                         <label class="mr-2">{{ item.name }} - ${{ item.price }}</label>
-                        <input type="number" class="item-quantity form-control ml-auto" name="quantities" min="1" value="1" onchange="updateTotal()" disabled>
+                        <input type="number" class="item-quantity form-control ml-auto" name="quantity" min="1" value="1" onchange="updateTotal()" disabled>
                     </div>
                 </div>
                 {% endfor %}
             </div>
-
+        
             <h3 id="total_price">總價: $0.00</h3>
             <button type="submit" class="btn btn-primary mt-3">下單</button>
         </form>
+        
 
         <a href="{{ url_for('home') }}" class="btn btn-link mt-3">回到主頁</a>
     </div>
@@ -114,16 +96,37 @@
 
     <!-- JavaScript -->
     <script>
-        document.querySelectorAll('.item-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('change', function () {
-                const quantityInput = this.parentElement.querySelector('.item-quantity');
-                quantityInput.disabled = !this.checked;
-                if (!this.checked) {
-                    quantityInput.value = 1;
+        function updateTotal() {
+            let total = 0;
+
+            // 遍歷所有選中的餐點，計算總價
+            document.querySelectorAll('.menu-item').forEach(item => {
+                const checkbox = item.querySelector('.item-checkbox');
+                const quantityInput = item.querySelector('.item-quantity');
+                const price = parseFloat(item.getAttribute('data-price'));
+
+                if (checkbox.checked) {
+                    const quantity = parseInt(quantityInput.value) || 0;
+                    total += price * quantity;
                 }
-                updateTotal();
             });
-        });
+
+            document.getElementById('total_price').textContent = `總價: $${total.toFixed(2)}`;
+        }
+
+        window.onload = function () {
+            document.querySelectorAll('.item-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', function () {
+                    const quantityInput = this.parentElement.querySelector('.item-quantity');
+                    quantityInput.disabled = !this.checked;
+                    if (!this.checked) {
+                        quantityInput.value = 1;
+                    }
+                    updateTotal();
+                });
+            });
+        };
+
     </script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>

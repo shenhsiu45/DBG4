@@ -53,16 +53,14 @@ def add_menu_item():
 def add_order():
     if request.method == 'POST':
         customer_name = request.form.get('customer_name')
-        item_ids = request.form.getlist('item_id')  # 多选支持
-        quantities = request.form.getlist('quantity')  # 每项的数量
-        orders_collection = current_app.config['restaurant']['orders']
+        item_ids = request.form.getlist('item_id')
+        quantities = request.form.getlist('quantity')
 
-        # 檢查是否有選擇餐點
         if not item_ids:
             flash('請選擇至少一個餐點')
             return redirect(url_for('create_bp.add_order'))
 
-        # 計算訂單總價
+        # 计算订单总价
         order_items = []
         total_price = 0
         for item_id, quantity in zip(item_ids, quantities):
@@ -78,21 +76,21 @@ def add_order():
                     'price': item_price
                 })
 
-        # 保存訂單到資料庫
+        # 保存订单到数据库
         new_order = {
-        'customer_name': customer_name,
-        'items': order_items,
-        'total_price': total_price,
-        'order_status': 'Pending',
-        'created_at': datetime.utcnow()
+            'customer_name': customer_name,
+            'items': order_items,
+            'total_price': total_price,
+            'order_status': 'Pending',
+            'created_at': datetime.utcnow()
         }
+        orders_collection = current_app.config['restaurant']['orders']
         orders_collection.insert_one(new_order)
         flash('訂單已成功添加')
         return redirect(url_for('read_bp.view_orders'))
 
-    # 載入所有餐點
+    # 获取菜单项
     menu_items = list(current_app.config['restaurant']['menu'].find())
     for item in menu_items:
-        item['_id'] = str(item['_id'])  # 轉換 _id 為字符串
+        item['_id'] = str(item['_id'])
     return render_template('add_order.html', menu_items=menu_items)
-
