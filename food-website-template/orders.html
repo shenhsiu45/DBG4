@@ -91,7 +91,7 @@
             <h2>搜索結果</h2>
             <ul>
                 {% for order in results %}
-                    <li>訂單ID: {{ order['_id'] }}, 顧客: {{ order['customer_name'] }}, 狀態: {{ order['order_status'] }}</li>
+                    <li>訂單ID: {{ order['id'] }}, 顧客: {{ order['customer_name'] }}, 狀態: {{ order['order_status'] }}</li>
                 {% endfor %}
             </ul>
         {% elif query %}
@@ -115,23 +115,23 @@
             <tbody>
                 {% for order in orders %}
                 <tr>
-                    <td>{{ order['_id'] }}</td>
+                    <td>{{ order['id'] }}</td>
                     <td>{{ order['customer_name'] }}</td>
                     <td>{{ order['item_id'] }}</td>
                     <td>{{ order['total_price'] }} 元</td>
                     <td>{{ order['order_status'] }}</td>
                     <td>{{ order['created_at'] }}</td>
                     <td>
-                        <button class="btn btn-sm btn-warning" onclick="toggleEdit('{{ order['_id'] }}')">編輯</button>
+                        <button class="btn btn-sm btn-warning" onclick="toggleEdit('{{ order['id'] }}')">編輯</button>
                     </td>
                 </tr>
                 <!-- 編輯表單 -->
-                <tr id="edit-row-{{ order['_id'] }}" class="d-none">
+                <tr id="edit-row-{{ order['id'] }}" class="d-none">
                     <td colspan="7">
-                        <form action="{{ url_for('update_bp.update_order', order_id=order['_id']) }}" method="POST" class="form-inline">
+                        <form action="{{ url_for('update_bp.update_order', order_id=order['id']) }}" method="POST" class="form-inline">
                             <div class="form-group mb-2">
-                                <label for="order_status_{{ order['_id'] }}">訂單狀態：</label>
-                                <select id="order_status_{{ order['_id'] }}" name="order_status" class="form-control mx-2">
+                                <label for="order_status_{{ order['id'] }}">訂單狀態：</label>
+                                <select id="order_status_{{ order['id'] }}" name="order_status" class="form-control mx-2">
                                     <option value="Pending" {% if order['order_status'] == 'Pending' %}selected{% endif %}>待處理</option>
                                     <option value="In Progress" {% if order['order_status'] == 'In Progress' %}selected{% endif %}>進行中</option>
                                     <option value="Completed" {% if order['order_status'] == 'Completed' %}selected{% endif %}>已完成</option>
@@ -139,10 +139,10 @@
                                 </select>
                             </div>
                             <div class="form-group mb-2">
-                                <label for="price_{{ order['_id'] }}">價格：</label>
+                                <label for="price_{{ order['id'] }}">價格：</label>
                                 <input 
                                     type="number" 
-                                    id="price_{{ order['_id'] }}" 
+                                    id="price_{{ order['id'] }}" 
                                     name="price" 
                                     value="{{ order['total_price'] }}" 
                                     class="form-control mx-2" 
@@ -152,7 +152,7 @@
                                 <small class="text-muted">目前價格：{{ order['total_price'] }} 元</small>
                             </div>                        
                             <button type="submit" class="btn btn-sm btn-success">保存</button>
-                            <button type="button" class="btn btn-sm btn-secondary" onclick="toggleEdit('{{ order['_id'] }}')">取消</button>
+                            <button type="button" class="btn btn-sm btn-secondary" onclick="toggleEdit('{{ order['id'] }}')">取消</button>
                         </form>
                     </td>
                 </tr>

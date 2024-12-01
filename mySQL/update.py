@@ -16,7 +16,7 @@ def update_order(order_id):
         o.total_price, 
         o.order_status, 
         o.created_at,
-        GROUP_CONCAT(CONCAT(oi.menu_id, ':', oi.quantity, ':', oi.price) SEPARATOR '|') AS items
+        GROUP_CONCAT(CONCAT( oi.quantity, ':', oi.price) SEPARATOR '|') AS items
     FROM orders o
     LEFT JOIN order_items oi ON o.id = oi.order_id
     WHERE o.id = %s
@@ -30,9 +30,8 @@ def update_order(order_id):
         order_items = []
         items_data = order['items'].split('|')
         for item_data in items_data:
-            menu_id, quantity, price = item_data.split(':')
+            quantity, price = item_data.split(':')
             order_items.append({
-                'menu_id': int(menu_id),
                 'quantity': int(quantity),
                 'price': float(price)
             })

@@ -55,13 +55,14 @@ def add_order():
             # 計算訂單總價
             total_price = 0
             order_items = []
+
             for item_id, quantity in zip(item_ids, quantities):
                 cursor.execute("SELECT name, price FROM menu WHERE id = %s", (item_id,))
-                menu_item = cursor.fetchone()
+                menu_item = cursor.fetchone()  # 獲取餐點名稱與價格
                 if menu_item:
                     item_name, price = menu_item
                     quantity = int(quantity)
-                    total_price += price * quantity
+                    total_price += price * quantity  # 計算總價
                     order_items.append((item_id, item_name, quantity, price))
 
             # 插入訂單
@@ -69,12 +70,12 @@ def add_order():
                 "INSERT INTO orders (customer_name, total_price, order_status, created_at) VALUES (%s, %s, %s, NOW())",
                 (customer_name, total_price, 'Pending')
             )
-            order_id = cursor.lastrowid
+            order_id = cursor.lastrowid  # 獲取插入的訂單 ID
 
-            # 插入訂單詳細項目
+            # 插入訂單項目
             for item_id, item_name, quantity, price in order_items:
                 cursor.execute(
-                    "INSERT INTO order_items (order_id, item_id, item_name, quantity, price) VALUES (%s, %s, %s, %s, %s)",
+                    "INSERT INTO order_items (order_id, menu_id, item_name, quantity, price) VALUES (%s, %s, %s, %s, %s)",
                     (order_id, item_id, item_name, quantity, price)
                 )
 

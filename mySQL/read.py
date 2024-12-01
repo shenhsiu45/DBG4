@@ -26,7 +26,7 @@ def view_orders():
     connection = current_app.config['get_db_connection']()
     cursor = connection.cursor(dictionary=True)
 
-    # 從 `orders` 表中獲取所有訂單
+    # 从 `orders` 表中获取所有订单
     query = """
     SELECT 
         o.id AS order_id,
@@ -35,34 +35,38 @@ def view_orders():
         o.order_status,
         o.created_at,
         GROUP_CONCAT(
-            CONCAT(oi.menu_id, ':', oi.quantity, ':', oi.price)
+            CONCAT( oi.quantity, ':', oi.price)
             SEPARATOR '|'
         ) AS items
     FROM orders o
     LEFT JOIN order_items oi ON o.id = oi.order_id
-    GROUP BY o.id
+    GROUP BY o.id, o.customer_name, o.total_price, o.order_status, o.created_at;
     """
     cursor.execute(query)
     orders = cursor.fetchall()
 
-    # 處理訂單項目以便於前端顯示
+    # 处理订单项目以便于前端显示
     for order in orders:
-        if order['items']:
+        if order['items']:  # 确保 items 不为 None
             order_items = []
-            items_data = order['items'].split('|')
+            items_data = order['items'].split('|')  # 将 items 分割成各个项目
             for item_data in items_data:
-                menu_id, quantity, price = item_data.split(':')
-                order_items.append({
-                    'menu_id': int(menu_id),
-                    'quantity': int(quantity),
-                    'price': float(price)
-                })
+                try:
+                    menu_id, quantity, price = item_data.split(':')  # 分割出 menu_id, quantity, price
+                    order_items.append({
+                        'menu_id': int(menu_id),  # 解析 menu_id
+                        'quantity': int(quantity),  # 解析数量
+                        'price': float(price)  # 解析价格
+                    })
+                except (ValueError, TypeError):
+                    continue  # 跳过错误数据
             order['items'] = order_items
         else:
-            order['items'] = []
+            order['items'] = []  # 如果 items 为 None 或空字符串，设置为空列表
+
 
     cursor.close()
     connection.close()
 
-    # 傳遞訂單資料到模板
+    # 传递订单数据到模板
     return render_template('orders.html', orders=orders)
